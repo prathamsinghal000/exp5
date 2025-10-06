@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product CRUD</title>
+</head>
+<body>
+    <h1>Product CRUD App</h1>
+
+    <!-- Add Product -->
+    <h2>Add Product</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="price" placeholder="Price">
+    <input type="text" id="category" placeholder="Category">
+    <button onclick="addProduct()">Add Product</button>
+
+    <hr>
+
+    <!-- Get All Products -->
+    <h2>All Products</h2>
+    <button onclick="getProducts()">Show Products</button>
+    <ul id="productList"></ul>
+
+    <hr>
+
+    <!-- Update Product -->
+    <h2>Update Product</h2>
+    <input type="text" id="updateId" placeholder="Product ID">
+    <input type="number" id="updatePrice" placeholder="New Price">
+    <button onclick="updateProduct()">Update Product</button>
+
+    <hr>
+
+    <!-- Delete Product -->
+    <h2>Delete Product</h2>
+    <input type="text" id="deleteId" placeholder="Product ID">
+    <button onclick="deleteProduct()">Delete Product</button>
+
+    <script>
+        const baseUrl = 'http://localhost:5000/api/products';
+
+        // Add Product
+        async function addProduct() {
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const category = document.getElementById('category').value;
+
+            const res = await fetch(baseUrl, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, price, category})
+            });
+            const data = await res.json();
+            alert('Product Added: ' + JSON.stringify(data));
+        }
+
+        // Get All Products
+        async function getProducts() {
+            const res = await fetch(baseUrl);
+            const products = await res.json();
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            products.forEach(p => {
+                const li = document.createElement('li');
+                li.textContent = ID: ${p._id}, Name: ${p.name}, Price: ${p.price}, Category: ${p.category};
+                list.appendChild(li);
+            });
+        }
+
+        // Update Product
+        async function updateProduct() {
+            const id = document.getElementById('updateId').value;
+            const price = document.getElementById('updatePrice').value;
+            const res = await fetch(${baseUrl}/${id}, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({price})
+            });
+            const data = await res.json();
+            alert('Updated: ' + JSON.stringify(data));
+        }
+
+        // Delete Product
+        async function deleteProduct() {
+            const id = document.getElementById('deleteId').value;
+            const res = await fetch(${baseUrl}/${id}, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+    </script>
+</body>
+</html>
